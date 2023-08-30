@@ -4,7 +4,7 @@ import { useNavigate,useLocation } from 'react-router-dom';
 const Home = () => {
     const location=useLocation();
     const [dtls,setDtls]=useState([]);
-    // const [book,setBook]=useState();
+    const navigate=useNavigate();
 
     const all=async()=>{
         const url='http://127.0.0.1:8000/grpbook/';
@@ -31,7 +31,6 @@ const Home = () => {
     useEffect(()=>{all()},[]);
 
     const handleSubmit=async (book)=>{
-        console.log(book);
         const url='http://127.0.0.1:8000/addbook/';
         const tknurl="http://127.0.0.1:8000/api/token/refresh/";
         const rfrsh=location.state.refresh;
@@ -44,7 +43,6 @@ const Home = () => {
         });
         let resp= await resf.json();
         let accstoken=resp.access;
-        console.log(accstoken);
         const call=await fetch(url,{
             method:"post",
             headers:{
@@ -53,15 +51,27 @@ const Home = () => {
             }
             ,body:JSON.stringify({book})
         })
-        let res=await call.json();
-
-        console.log(res);
 
     }
 
+    const logout=async ()=>{
+        let url='http://127.0.0.1:8000/logout/';
+        let f=await fetch(url);
+        let resp=await f.json();
+        if(f.status===202){
+            navigate('/login')
+        }
+    }
+    const cart=()=>{
+        navigate('/orders',{state:{refresh:location.state.refresh}})
+    }
+    
   return (
     <div>
        <h1> Welcome</h1>
+       <button type='button' onClick={logout}>Logout</button>
+       <br />
+       <button type='button' onClick={cart}>GO TO CART</button>
        <div className="items">
        {
            dtls.map((dt)=>{
@@ -88,13 +98,3 @@ const Home = () => {
 }
 
 export default Home;
-
-
-
-// {
-//     records.map((record)=>{
-//         return(
-//             <h3>{record.name}</h3>
-//         )
-//     })
-// }

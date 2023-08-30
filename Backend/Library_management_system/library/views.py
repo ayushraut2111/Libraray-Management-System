@@ -47,6 +47,12 @@ class Login(APIView):
         else:
             return Response({"msg":"please enter valid credentials"},status=status.HTTP_400_BAD_REQUEST)
 
+class Logout(APIView):
+    authentication_classes=[]
+    permission_classes=[]
+    def get(self,request):
+        auth.logout(request)
+        return Response({"msg":"logout successfull"},status=status.HTTP_202_ACCEPTED)
 
 
 
@@ -67,12 +73,13 @@ class AddBook(ModelViewSet):
     def get_queryset(self):
         return UserBook.objects.filter(user=self.request.user)
     def create(self, request, *args, **kwargs):
-        if UserBook.objects.filter(book=request.data['book']).exists():  # if book is already present in cart 
-            usr=UserBook.objects.filter(book=request.data['book'])  # then get the book from the db and update its count so for that first get the count
+        if UserBook.objects.filter(book=request.data['book'],user=self.request.user).exists():  # if book is already present in cart 
+            usr=UserBook.objects.filter(book=request.data['book'],user=self.request.user)  # then get the book from the db and update its count so for that first get the count
             lst=list(usr.values())
             # print(lst[0]['number'])
             id=lst[0]['id']
             ins=UserBook.objects.get(id=id)  # for updating we get previous instance so get its id
+            # print(ins)
             ser=UserBookSerializer(ins,data=request.data,context={'request':request,'number':lst[0]['number']+1})  # then update the data
             if ser.is_valid():
                 ser.save()
@@ -83,6 +90,30 @@ class AddBook(ModelViewSet):
                 ser.save()
                 return Response({"msg":"book added to cart successfully"},status=status.HTTP_202_ACCEPTED)
         return Response({"msg":"Invalid Request"},status=status.HTTP_400_BAD_REQUEST)
+    
+    def destroy(self, request,pk):
+        # print(pk,request.data)
+        usr=list(UserBook.objects.filter(id=pk).values())
+        # print(usr)
+        quant=usr[0]['number']
+        if quant==1:
+            ins=UserBook.objects.get(id=pk)
+            ins.delete()
+            return Response({"msg":"item removed"},status=status.HTTP_202_ACCEPTED)
+        else:
+            ins=UserBook.objects.get(id=pk)
+            # print(ins,quant)
+            ser=UserBookSerializer(ins,data=request.data,partial=True,context={'request':request,'number':quant-1})
+            if ser.is_valid():
+                ser.save()
+                return Response({"msg":"item removed"},status=status.HTTP_202_ACCEPTED)
+            return Response({"msg":"Invalid Response"},status=status.HTTP_400_BAD_REQUEST)
+
+
+
+            
+
+
     
 
         
