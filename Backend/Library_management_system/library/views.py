@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from . models import (UserBook,UserInfo,Books)
-from .serializers import UserBookSerializer,UserInfoSerializer,BookGrpSerializer
+from .serializers import UserBookSerializer,BookGrpSerializer
 from itertools import groupby
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -9,10 +9,10 @@ from django.contrib.auth.models import User
 from django.contrib import auth
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
 class Signup(APIView):
+    authentication_classes=[]
+    permission_classes=[]
     def post(self,request):
-        print(request.data)
         name=request.data['username']
         email=request.data['email']
         pass1=request.data['password1']
@@ -26,19 +26,23 @@ class Signup(APIView):
             else:
                 usr=User.objects.create_user(username=name,email=email,password=pass1)
                 usr.save()
+                dic=request.data
+                usrinfo=UserInfo.objects.create(user=usr,name=dic['name'],phone=dic['phone'],email=email,address=dic['address'],college=dic['college'])
+                usrinfo.save()
                 return Response({"msg":"user created"},status=status.HTTP_202_ACCEPTED)
         else:
             return Response({"msg":"password not matched"},status=status.HTTP_400_BAD_REQUEST)
         
 
 class Login(APIView):
+    authentication_classes=[]
+    permission_classes=[]
     def post(self,request):
-        print(request.data)
         name=request.data['username']
         password=request.data['password']
         usr=auth.authenticate(username=name,password=password)
         if usr is not None:
-            refresh = RefreshToken.for_user(usr) 
+            refresh = RefreshToken.for_user(usr)
             return Response({"msg":"user logged in", 'token':{'refresh': str(refresh),'access': str(refresh.access_token)}},status=status.HTTP_202_ACCEPTED)
         else:
             return Response({"msg":"please enter valid credentials"},status=status.HTTP_400_BAD_REQUEST)
@@ -60,7 +64,5 @@ class BookGrp(ModelViewSet):
 class AddBook(ModelViewSet):
     queryset=UserBook.objects.all()
     serializer_class=UserBookSerializer
-
-class AddUser(ModelViewSet):
-    queryset=UserInfo.objects.all()
-    serializer_class=UserInfoSerializer
+    
+        

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
     const navigate=useNavigate();
-    const [details,setDetails]=useState({username:"",email:"",password1:"",password2:""})
+    const [details,setDetails]=useState({username:"",name:"",email:"",phone:"",college:"",address:"",password1:"",password2:""})
     const [msg,setMsg]=useState('')
     const handleChange=(e)=>{
        
@@ -11,7 +11,6 @@ const Signup = () => {
         const value=e.target.value;
         setDetails({...details,[name]:value});
     }
-    console.log(details);
     const handleSubmit=async(e)=>{
         e.preventDefault();
         let url='http://127.0.0.1:8000/signup/';
@@ -29,7 +28,7 @@ const Signup = () => {
             navigate('/login')
         }
     }
-    console.log(msg);
+    
   return (
     <div>
       <h1>Please signup Here</h1>
@@ -38,7 +37,11 @@ const Signup = () => {
       }
       <form className='frm'>
         <input type="text" className="frminp"  onChange={handleChange}  name='username' value={details.username}  placeholder='username'/>
+        <input type="text" onChange={handleChange} placeholder='name' name='name' value={details.name} className="frminput" />
         <input type="email" className="frminp"  onChange={handleChange}  name='email' value={details.email}  placeholder='email'/>
+        <input type="number" onChange={handleChange} placeholder='phone' name='phone' value={details.phone} className="frminput" />
+        <input type="text" onChange={handleChange} placeholder='college' name='college' value={details.college} className="frminput" />
+        <input type="text" onChange={handleChange} placeholder='address' name='address' value={details.address} className="frminput" />
         <input type="password" className="frminp"  onChange={handleChange}  name='password1' value={details.password1}  placeholder='password'/>
         <input type="password" className="frminp"  onChange={handleChange}  name='password2' value={details.password2}  placeholder='confirm password'/>
         <button type='submit' onClick={handleSubmit}>Signup</button>

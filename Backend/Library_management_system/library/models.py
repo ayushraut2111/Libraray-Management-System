@@ -20,7 +20,7 @@ class UserInfo(models.Model):
     user=models.OneToOneField(User,on_delete=models.CASCADE,null=True,blank=True)
     name=models.CharField(max_length=100)
     phone=models.IntegerField()
-    email=models.EmailField()
+    email=models.EmailField(null=True,blank=True)
     address=models.TextField()
     college=models.CharField(max_length=100)
 

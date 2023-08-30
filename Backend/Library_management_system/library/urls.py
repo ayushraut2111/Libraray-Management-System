@@ -9,7 +9,6 @@ from rest_framework_simplejwt.views import (
 router=DefaultRouter()
 
 router.register('addbook',views.AddBook)
-router.register('adduser',views.AddUser)
 router.register('grpbook',views.BookGrp)
 
 urlpatterns = [
