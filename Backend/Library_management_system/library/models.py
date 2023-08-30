@@ -10,7 +10,8 @@ class Books(models.Model):
     
 class UserBook(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
-    book=models.ForeignKey(Books,on_delete=models.CASCADE)
+    book=models.CharField(max_length=100)
+    number=models.IntegerField(null=True,blank=True)
 
     def __str__(self) -> str:
         return self.book

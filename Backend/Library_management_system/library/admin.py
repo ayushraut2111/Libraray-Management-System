@@ -8,7 +8,7 @@ class BooksRegister(admin.ModelAdmin):
 
 @admin.register(UserBook)
 class UserBookRegister(admin.ModelAdmin):
-    list_display=['id','user','book']
+    list_display=['id','user','book','number']
     
 @admin.register(UserInfo)
 class UserInfoRegister(admin.ModelAdmin):

@@ -64,5 +64,25 @@ class BookGrp(ModelViewSet):
 class AddBook(ModelViewSet):
     queryset=UserBook.objects.all()
     serializer_class=UserBookSerializer
+    def get_queryset(self):
+        return UserBook.objects.filter(user=self.request.user)
+    def create(self, request, *args, **kwargs):
+        if UserBook.objects.filter(book=request.data['book']).exists():  # if book is already present in cart 
+            usr=UserBook.objects.filter(book=request.data['book'])  # then get the book from the db and update its count so for that first get the count
+            lst=list(usr.values())
+            # print(lst[0]['number'])
+            id=lst[0]['id']
+            ins=UserBook.objects.get(id=id)  # for updating we get previous instance so get its id
+            ser=UserBookSerializer(ins,data=request.data,context={'request':request,'number':lst[0]['number']+1})  # then update the data
+            if ser.is_valid():
+                ser.save()
+                return Response({"msg":"book added to cart successfully"},status=status.HTTP_202_ACCEPTED)
+        else:   # if book is not present in cart then simply save it in database with its count 1
+            ser=UserBookSerializer(data=request.data,context={'request':request,'number':1})
+            if ser.is_valid():
+                ser.save()
+                return Response({"msg":"book added to cart successfully"},status=status.HTTP_202_ACCEPTED)
+        return Response({"msg":"Invalid Request"},status=status.HTTP_400_BAD_REQUEST)
     
+
         
