@@ -1,18 +1,36 @@
 import React,{useState} from 'react';
 import { useNavigate } from 'react-router-dom';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-const Login = () => {
+function Copyright(props) {
+    return (
+      <Typography variant="body2" color="text.secondary" align="center" {...props}>
+              {'Copyright © Library Management System 2023'}
+      </Typography>
+    );
+  }
+
+const defaultTheme = createTheme();
+
+export default function SignIn() {
     const navigate=useNavigate();
-    const [details,setDetails]=useState({username:"",password:""})
     const [msg,setMsg]=useState('')
-    const handleChange=(e)=>{
-       
-        const name=e.target.name;
-        const value=e.target.value;
-        setDetails({...details,[name]:value});
-    }
-    const handleSubmit=async(e)=>{
-        e.preventDefault();
+
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const details={username:data.get('username'),password:data.get('password')};
         let url='http://127.0.0.1:8000/login/';
         let dta=JSON.stringify(details);
         let res=await fetch(url,{
@@ -28,20 +46,81 @@ const Login = () => {
             navigate('/home',{state:token})
         }
         setMsg(getmsg.msg);
-    }
+
+  };
+
   return (
-    <div>
-      <h1>Please enter credentials to login</h1>
-        <h1>{msg}</h1>
-      
-      <form className='frm'>
-        <input type="text" className="frminp"  onChange={handleChange}  name='username' value={details.username}  placeholder='username'/>
-        <input type="password" className="frminp"  onChange={handleChange}  name='password' value={details.password}  placeholder='password'/>
-        <button type='submit' onClick={handleSubmit}>Login</button>
-        <button type='button' onClick={()=>navigate('/')}>Signup</button>
-      </form>
-      
-    </div>
-  )
+    <ThemeProvider theme={defaultTheme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+            <br />
+             {
+            msg.msg
+            }
+          </Typography>
+
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} >
+                <TextField
+                  autoComplete="given-name"
+                  name="username"
+                  required
+                  fullWidth
+                  id="lastname"
+                  label="User Name"
+                  autoFocus
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="new-password"
+                />
+              </Grid>
+            </Grid>
+            <Typography component="h1" variant="h5">
+             {
+            msg
+            }
+          </Typography>
+                <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                >
+              Sign in
+            </Button>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link href="/" variant="body2">
+                  Don't have an account? Sign up
+                </Link>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        <Copyright sx={{ mt: 5 }} />
+      </Container>
+    </ThemeProvider>
+  );
 }
-export default Login;
