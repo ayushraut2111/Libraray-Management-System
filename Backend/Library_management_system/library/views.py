@@ -62,8 +62,7 @@ class BookGrp(ModelViewSet):
     serializer_class=BookGrpSerializer
 
     def list(self, request, *args, **kwargs):
-        values = [
-    {'category': k, 'records': list(g)} for k, g in groupby(Books.objects.order_by('category').values(), lambda x: x['category'])]
+        values = [{'category': k, 'records': list(g)} for k, g in groupby(Books.objects.order_by('category').values(), lambda x: x['category'])]
         return Response(values)
 
 
@@ -78,7 +77,7 @@ class AddBook(ModelViewSet):
             lst=list(usr.values())
             # print(lst[0]['number'])
             id=lst[0]['id']
-            ins=UserBook.objects.get(id=id)  # for updating we get previous instance so get its id
+            ins=UserBook.objects.get(id=id)  # for updating we get previous instance so get by its id
             # print(ins)
             ser=UserBookSerializer(ins,data=request.data,context={'request':request,'number':lst[0]['number']+1})  # then update the data
             if ser.is_valid():
