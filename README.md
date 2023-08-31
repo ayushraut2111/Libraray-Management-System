@@ -11,7 +11,7 @@ For starting frontend follow these steps :-
 
 1. before starting frontend server make sure node in installed in your system.
 2. then open frontend folder, then libraryfrontend folder.
-3. inside this folder open cmd and run command "npm install react-scripts --save" to install all the node dependencies.
+3. inside this folder open cmd and run command "npm install" to install all the node dependencies.
 4. after all the dependencies are installed,stay in the same folder terminal and run command "npm start" to run the  frontend server.
 
 Now both fronend and backend is started and you can acess the signup page in local host 3000.
