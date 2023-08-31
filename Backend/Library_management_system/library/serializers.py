@@ -10,7 +10,6 @@ class UserBookSerializer(ModelSerializer):
         validated_data['number']=self.context['number']
         return UserBook.objects.create(**validated_data)
     def update(self, instance, validated_data):
-        print(instance.number)
         instance.number=self.context['number']
         instance.save()
         return instance

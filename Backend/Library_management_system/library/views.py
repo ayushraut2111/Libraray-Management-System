@@ -17,7 +17,6 @@ class Signup(APIView):
         email=request.data['email']
         pass1=request.data['password1']
         pass2=request.data['password2']
-        print(name,email,pass1,pass2)
         if pass1==pass2:
             if User.objects.filter(email=email).exists():
                 return Response({"msg":"Email already registered please sign in"},status=status.HTTP_400_BAD_REQUEST)
